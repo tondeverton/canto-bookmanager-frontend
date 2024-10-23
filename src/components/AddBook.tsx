@@ -2,19 +2,22 @@ import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {addBook} from '../features/bookReducer';
 import {createBook} from '../api/api';
+import DatePicker from "react-datepicker";
+import 'react-datepicker/dist/react-datepicker.css';
 
 const AddBook = () => {
     const dispatch = useDispatch();
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
-    const [publishedDate, setPublishedDate] = useState('');
+    const [publishedDate, setPublishedDate] = useState<Date | null>(null);
 
     const handleAddBook = async () => {
-        const newBook = await createBook({title, author, publishedDate});
+        const publishedDateAsISODateString = publishedDate!.toISOString().slice(0, 10);
+        const newBook = await createBook({title, author, publishedDate: publishedDateAsISODateString});
         dispatch(addBook(newBook));
         setTitle('');
         setAuthor('');
-        setPublishedDate('');
+        setPublishedDate(null);
     };
 
     return (
@@ -32,11 +35,15 @@ const AddBook = () => {
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
             />
-            <input
-                type="text"
-                placeholder="Published Date"
-                value={publishedDate}
-                onChange={(e) => setPublishedDate(e.target.value)}
+            <DatePicker
+                placeholderText="Published Date"
+                selected={publishedDate}
+                showYearDropdown={true}
+                dropdownMode="select"
+                onChange={(date) => setPublishedDate(date)}
+                minDate={new Date(1970, 0, 1)}
+                maxDate={new Date()}
+                dateFormat="yyyy-MM-dd"
             />
             <button onClick={handleAddBook}>Add</button>
         </div>
