@@ -70,9 +70,7 @@ export const deleteBook = async (id: number): Promise<number> => {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
             query: `mutation($id: Int!) {
-        deleteBook(id: $id) {
-          id
-        }
+        deleteBook(id: $id)
       }`,
             variables: {id: id},
         }),
