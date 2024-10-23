@@ -43,6 +43,30 @@ export const fetchBookById = async (id: number): Promise<Book> => {
     return data.findBookById;
 };
 
+export const fetchBookByPublishedDateRange = async (from: Date, to: Date): Promise<Book[]> => {
+    const fromAsISODate = from.toISOString().split('T')[0];
+    const toAsISODate = to?.toISOString().split('T')[0];
+
+    const response = await fetch(GRAPHQL_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            query: `query($from: String!, $to: String) {
+        findBooksByPublishedDateRange(from: $from, to: $to) {
+          id
+          title
+          author
+          publishedDate
+        }
+      }`,
+            variables: {from: fromAsISODate, to: toAsISODate},
+        }),
+    });
+
+    const {data} = await response.json();
+    return data.findBooksByPublishedDateRange;
+};
+
 export const createBook = async (book: Omit<Book, 'id'>): Promise<Book> => {
     const response = await fetch(GRAPHQL_URL, {
         method: 'POST',
