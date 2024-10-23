@@ -1,4 +1,5 @@
 import {Book} from '../features/bookReducer';
+import {getISODateFromDate} from "../utilities/date";
 
 const GRAPHQL_URL = 'http://localhost:8080/graphql';
 
@@ -44,8 +45,8 @@ export const fetchBookById = async (id: number): Promise<Book> => {
 };
 
 export const fetchBookByPublishedDateRange = async (from: Date, to: Date): Promise<Book[]> => {
-    const fromAsISODate = from.toISOString().split('T')[0];
-    const toAsISODate = to?.toISOString().split('T')[0];
+    const fromAsISODate = getISODateFromDate(from);
+    const toAsISODate = to ? getISODateFromDate(to) : undefined;
 
     const response = await fetch(GRAPHQL_URL, {
         method: 'POST',

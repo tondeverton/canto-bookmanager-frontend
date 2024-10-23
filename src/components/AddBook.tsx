@@ -4,6 +4,7 @@ import {addBook} from '../features/bookReducer';
 import {createBook} from '../api/api';
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
+import {getISODateFromDate} from "../utilities/date";
 
 const AddBook = () => {
     const dispatch = useDispatch();
@@ -12,7 +13,7 @@ const AddBook = () => {
     const [publishedDate, setPublishedDate] = useState<Date | null>(null);
 
     const handleAddBook = async () => {
-        const publishedDateAsISODateString = publishedDate!.toISOString().slice(0, 10);
+        const publishedDateAsISODateString = getISODateFromDate(publishedDate!);
         const newBook = await createBook({title, author, publishedDate: publishedDateAsISODateString});
         dispatch(addBook(newBook));
         setTitle('');
