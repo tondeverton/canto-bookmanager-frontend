@@ -19,7 +19,7 @@ const App: React.FC = () => {
 
     return (
         <div>
-            <h1>Book Management</h1>
+            <h1 className="text-center">Book Management</h1>
             <AddBook/>
             <BooksList/>
         </div>

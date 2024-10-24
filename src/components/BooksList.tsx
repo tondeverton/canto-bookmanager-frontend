@@ -23,39 +23,66 @@ const BooksList = () => {
     }
 
     return (
-        <div>
-            <h2>Books</h2>
+        <div className="container mt-5">
+            <h2 className="mb-4">Books</h2>
 
-            <DatePicker
-                placeholderText="From"
-                selected={selectedDateFilterFrom}
-                showYearDropdown={true}
-                dropdownMode="select"
-                onChange={(date) => setSelectedDateFilterFrom(date)}
-                minDate={new Date(1970, 0, 1)}
-                maxDate={new Date()}
-                dateFormat="yyyy-MM-dd"
-            />
-            <DatePicker
-                placeholderText="From"
-                selected={selectedDateFilterTo}
-                showYearDropdown={true}
-                dropdownMode="select"
-                onChange={(date) => setSelectedDateFilterTo(date)}
-                minDate={new Date(1970, 0, 1)}
-                maxDate={new Date()}
-                dateFormat="yyyy-MM-dd"
-            />
-            <button onClick={handleFilter}>Filter</button>
+            <div className="row">
+                <div className="col-md-4 mb-3">
+                    <DatePicker
+                        placeholderText="From *"
+                        selected={selectedDateFilterFrom}
+                        showYearDropdown={true}
+                        dropdownMode="select"
+                        onChange={(date) => setSelectedDateFilterFrom(date)}
+                        minDate={new Date(1970, 0, 1)}
+                        maxDate={new Date()}
+                        dateFormat="yyyy-MM-dd"
+                        className="form-control"
+                        wrapperClassName="w-100"
+                    />
+                </div>
+                <div className="col-md-4 mb-3">
+                    <DatePicker
+                        placeholderText="To"
+                        selected={selectedDateFilterTo}
+                        showYearDropdown={true}
+                        dropdownMode="select"
+                        onChange={(date) => setSelectedDateFilterTo(date)}
+                        minDate={new Date(1970, 0, 1)}
+                        maxDate={new Date()}
+                        dateFormat="yyyy-MM-dd"
+                        className="form-control"
+                        wrapperClassName="w-100"
+                    />
+                </div>
+                <button onClick={handleFilter} className="col-md-4 mb-3 btn btn-primary">Filter</button>
+            </div>
 
-            <ul>
-                {books.map(book => (
-                    <li key={book.id}>
-                        {book.title} by {book.author} (Published: {book.publishedDate})
-                        <button onClick={() => handleDeleteBook(book.id)}>Delete</button>
-                    </li>
-                ))}
-            </ul>
+            <div className="row">
+                <table className="table table-striped">
+                    <thead className="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Author</th>
+                        <th scope="col">Published date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {books.map(book => (
+                        <tr>
+                            <th scope="row">{book.id}</th>
+                            <td>{book.title}</td>
+                            <td>{book.author}</td>
+                            <td>{book.publishedDate}</td>
+                            <td>
+                                <button onClick={() => handleDeleteBook(book.id)} className="btn btn-danger w-100">Delete</button>
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };
