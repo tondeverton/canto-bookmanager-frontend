@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../store';
 import {deleteBook as delBook, setBooks} from '../features/bookReducer';
@@ -11,6 +11,8 @@ const BooksList = () => {
     const dispatch = useDispatch();
     const [selectedDateFilterFrom, setSelectedDateFilterFrom] = useState<Date | null>(null);
     const [selectedDateFilterTo, setSelectedDateFilterTo] = useState<Date | null>(null);
+    const [showAlert, setShowAlert] = useState(false);
+    const alertTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const handleDeleteBook = async (id: number) => {
         let number = await deleteBook(id);
@@ -18,7 +20,26 @@ const BooksList = () => {
     }
 
     const handleFilter = async () => {
-        const filteredBooks = await fetchBookByPublishedDateRange(selectedDateFilterFrom!, selectedDateFilterTo!);
+        let dateFrom = selectedDateFilterFrom!;
+        let dateTo = selectedDateFilterTo!;
+
+        if (!dateFrom && dateTo) {
+            setSelectedDateFilterFrom(dateTo);
+            setSelectedDateFilterTo(null);
+            dateFrom = dateTo;
+        }
+
+        if (!dateFrom) {
+            handleShowAlert();
+            return;
+        }
+
+        if (dateTo && dateFrom > dateTo) {
+            handleShowAlert();
+            return;
+        }
+
+        const filteredBooks = await fetchBookByPublishedDateRange(dateFrom, dateTo);
         dispatch(setBooks(filteredBooks))
     }
 
@@ -29,9 +50,26 @@ const BooksList = () => {
         dispatch(setBooks(books))
     }
 
+    const handleShowAlert = () => {
+        setShowAlert(true);
+        alertTimeoutRef.current = setTimeout(() => setShowAlert(false), 3000);
+    };
+
+    const removeAlert = () => {
+        clearTimeout(alertTimeoutRef.current!)
+        setShowAlert(false);
+    }
+
     return (
         <div className="container mt-5">
             <h2 className="mb-4">Books</h2>
+
+            {showAlert && (
+                <div className="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                    <strong>Fail!</strong> Please fill at least the date From.
+                    <button type="button" className="btn-close" onClick={() => removeAlert()}></button>
+                </div>
+            )}
 
             <div className="row">
                 <div className="col-md-4 mb-3">
@@ -84,7 +122,9 @@ const BooksList = () => {
                             <td>{book.author}</td>
                             <td>{book.publishedDate}</td>
                             <td>
-                                <button onClick={() => handleDeleteBook(book.id)} className="btn btn-danger w-100">Delete</button>
+                                <button onClick={() => handleDeleteBook(book.id)}
+                                        className="btn btn-danger w-100">Delete
+                                </button>
                             </td>
                         </tr>
                     ))}

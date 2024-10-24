@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {addBook} from '../features/bookReducer';
 import {createBook} from '../api/api';
@@ -11,19 +11,45 @@ const AddBook = () => {
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const [publishedDate, setPublishedDate] = useState<Date | null>(null);
+    const [showAlert, setShowAlert] = useState(false);
+    const alertTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const handleAddBook = async () => {
+        if (!title || title.trim() === ''
+            || !author || author.trim() === ''
+            || !publishedDate) {
+            handleShowAlert();
+            return;
+        }
+
         const publishedDateAsISODateString = getISODateFromDate(publishedDate!);
         const newBook = await createBook({title, author, publishedDate: publishedDateAsISODateString});
         dispatch(addBook(newBook));
+
         setTitle('');
         setAuthor('');
         setPublishedDate(null);
     };
 
+    const handleShowAlert = () => {
+        setShowAlert(true);
+        alertTimeoutRef.current = setTimeout(() => setShowAlert(false), 3000);
+    };
+
+    const removeAlert = () => {
+        clearTimeout(alertTimeoutRef.current!)
+        setShowAlert(false);
+    }
+
     return (
         <div className="container mt-5">
             <h2 className="mb-4">Add Book</h2>
+            {showAlert && (
+                <div className="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                    <strong>Fail!</strong> Please fill all the fields.
+                    <button type="button" className="btn-close" onClick={() => removeAlert()}></button>
+                </div>
+            )}
             <div className="row">
                 <div className="col-md-5 mb-3">
                     <input
