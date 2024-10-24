@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../store';
 import {deleteBook as delBook, setBooks} from '../features/bookReducer';
-import {deleteBook, fetchBookByPublishedDateRange} from "../api/api";
+import {deleteBook, fetchBookByPublishedDateRange, fetchBooks} from "../api/api";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -20,6 +20,13 @@ const BooksList = () => {
     const handleFilter = async () => {
         const filteredBooks = await fetchBookByPublishedDateRange(selectedDateFilterFrom!, selectedDateFilterTo!);
         dispatch(setBooks(filteredBooks))
+    }
+
+    const handleReset = async () => {
+        const books = await fetchBooks();
+        setSelectedDateFilterFrom(null)
+        setSelectedDateFilterTo(null)
+        dispatch(setBooks(books))
     }
 
     return (
@@ -48,14 +55,15 @@ const BooksList = () => {
                         showYearDropdown={true}
                         dropdownMode="select"
                         onChange={(date) => setSelectedDateFilterTo(date)}
-                        minDate={new Date(1970, 0, 1)}
+                        minDate={selectedDateFilterFrom ?? new Date(1970, 0, 1)}
                         maxDate={new Date()}
                         dateFormat="yyyy-MM-dd"
                         className="form-control"
                         wrapperClassName="w-100"
                     />
                 </div>
-                <button onClick={handleFilter} className="col-md-4 mb-3 btn btn-primary">Filter</button>
+                <button onClick={handleFilter} className="col-md-2 mb-3 btn btn-primary">Filter</button>
+                <button onClick={handleReset} className="col-md-2 mb-3 btn btn-dark">Reset</button>
             </div>
 
             <div className="row">
