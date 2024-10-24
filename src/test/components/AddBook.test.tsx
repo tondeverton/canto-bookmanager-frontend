@@ -31,9 +31,9 @@ describe('BooksList', () => {
             </Provider>
         );
 
-        const titleInput = getByPlaceholderText('Title');
-        const authorInput = getByPlaceholderText('Author');
-        const publishedDateInput = getByPlaceholderText('Published Date');
+        const titleInput = getByPlaceholderText('Title *');
+        const authorInput = getByPlaceholderText('Author *');
+        const publishedDateInput = getByPlaceholderText('Published Date *');
         const addButton = getByText('Add');
 
         fireEvent.change(titleInput, { target: { value: 'Test Book' } });

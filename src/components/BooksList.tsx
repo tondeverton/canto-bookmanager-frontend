@@ -112,6 +112,7 @@ const BooksList = () => {
                         <th scope="col">Title</th>
                         <th scope="col">Author</th>
                         <th scope="col">Published date</th>
+                        <th scope="col">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
