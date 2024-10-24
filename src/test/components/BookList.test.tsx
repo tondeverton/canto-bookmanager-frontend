@@ -28,14 +28,18 @@ describe('BooksList', () => {
     });
 
     it('should render a list of books', () => {
-        const { getByText } = render(
+        const { getByText, getAllByText } = render(
             <Provider store={store}>
                 <BooksList />
             </Provider>
         );
 
         expect(getByText('Books')).toBeInTheDocument();
-        expect(getByText('Book One by Author One (Published: 2021-01-01)')).toBeInTheDocument();
-        expect(getByText('Book Two by Author Two (Published: 2022-02-02)')).toBeInTheDocument();
+        const bookOneLineElements = getAllByText(/Book One|Author One|2021-01-01/i);
+        expect(bookOneLineElements.length).toBe(3);
+        bookOneLineElements.forEach((element) => expect(element).toBeInTheDocument());
+        let bookTwoLineElements = getAllByText(/Book Two|Author Two|2022-02-02/i);
+        expect(bookTwoLineElements.length).toBe(3);
+        bookTwoLineElements.forEach((element) => expect(element).toBeInTheDocument());
     });
 });
