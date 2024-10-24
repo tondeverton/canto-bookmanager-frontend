@@ -14,3 +14,9 @@ Run the frontend:
 npm start
 ```
 
+## Improvements
+
+### Paging books
+
+Integrate with paging query from backend.
+
